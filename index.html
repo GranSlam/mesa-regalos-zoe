@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Deseos - Zoé</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Quicksand', sans-serif; background-color: #f9fafb; }
+    </style>
+</head>
+<body class="text-gray-800 p-4 sm:p-8">
+
+    <div class="max-w-2xl mx-auto bg-white shadow-xl rounded-2xl overflow-hidden border border-gray-100 p-6 sm:p-8 mt-4">
+        
+        <div class="text-center mb-8">
+            <div class="text-4xl mb-2">🎁 🍼</div>
+            <h1 class="text-3xl font-bold text-gray-800 mb-2">Lista de Deseos</h1>
+            <p class="text-gray-500 text-sm max-w-md mx-auto">Si deseas hacernos un regalo, hemos preparado una lista con algunas cositas que nos serán de gran ayuda para la llegada de nuestra bebé Zoé. Lo más importante para nosotros será compartir este día contigo💛.</p>
+        </div>
+
+        <div class="space-y-3">
+            {% for regalo in regalos %}
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-xl border {{ 'bg-gray-50 border-gray-200' if regalo.cupos_disponibles == 0 else 'bg-white border-yellow-100 hover:border-yellow-300' }} transition-colors duration-200">
+                
+                <div class="mb-3 sm:mb-0">
+                    <span class="text-base font-semibold {{ 'text-gray-400 line-through' if regalo.cupos_disponibles == 0 else 'text-gray-800' }}">
+                        {{ regalo.articulo }}
+                    </span>
+                    
+                    {% if regalo.cupos_totales > 1 %}
+                    <span class="ml-2 text-xs font-bold px-2 py-1 rounded-full {{ 'bg-gray-200 text-gray-500' if regalo.cupos_disponibles == 0 else 'bg-yellow-100 text-yellow-700' }}">
+                        Cupos: {{ regalo.cupos_totales - regalo.cupos_disponibles }}/{{ regalo.cupos_totales }}
+                    </span>
+                    {% endif %}
+
+                    {% if regalo.elegidos_por %}
+                    <p class="text-xs text-yellow-600 font-bold mt-1 flex items-center gap-1">
+                        <span>✓</span> Reservado por: {{ regalo.elegidos_por }}
+                    </p>
+                    {% endif %}
+                </div>
+
+                <div>
+                    {% if regalo.cupos_disponibles > 0 %}
+                    <form action="/reservar" method="post" class="flex flex-col sm:flex-row gap-2 w-full">
+                        <input type="hidden" name="id_regalo" value="{{ regalo.id }}">
+                        <input type="text" name="nombre" placeholder="Tu nombre y apellido" required 
+                               class="px-3 py-1.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400 w-full sm:w-44 bg-gray-50/50">
+                        <button type="submit" 
+                                class="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold text-sm px-5 py-1.5 rounded-lg transition-colors cursor-pointer w-full sm:w-auto shadow-sm">
+                            Apartar
+                        </button>
+                    </form>
+                    {% else %}
+                    <div class="bg-gray-100 text-gray-400 text-sm font-bold px-5 py-1.5 rounded-lg text-center w-full sm:w-auto cursor-not-allowed border border-gray-200">
+                        Completo
+                    </div>
+                    {% endif %}
+                </div>
+
+            </div>
+            {% endfor %}
+        </div>
+        
+    </div>
+</body>
+</html>
